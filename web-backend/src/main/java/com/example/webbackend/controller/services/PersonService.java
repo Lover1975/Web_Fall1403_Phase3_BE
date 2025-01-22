@@ -62,6 +62,10 @@ public class PersonService {
         return personRepository.existsByUsername(username);
     }
 
+    public List<Person> findDesignersByUsername(String partialName) {
+        return personRepository.findDesignersByUsernameLike(PersonType.DESIGNER, partialName);
+    }
+
     public Person findPersonByUsername(String username) {
         return personRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Person not found"));
     }

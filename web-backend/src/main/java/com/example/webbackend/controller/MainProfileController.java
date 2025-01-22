@@ -26,4 +26,14 @@ public class MainProfileController {
         ProfileDto profile = profileService.getProfile(username);
         return new BaseResponse<>(ResponseHeader.OK, profile);
     }
+
+    @GetMapping("/search")
+    public BaseResponse<ProfileDto> searchUserProfile(@RequestParam String username) {
+        boolean userExists = profileService.existsUser(username);
+        if (!userExists) {
+            return new BaseResponse<>(ResponseHeader.USERNAME_NOT_EXISTS, null);
+        }
+        ProfileDto profile = profileService.getProfile(username);
+        return new BaseResponse<>(ResponseHeader.OK, profile);
+    }
 }

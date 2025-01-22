@@ -19,6 +19,10 @@ public class ProfileService {
         this.questionRepository = questionRepository;
     }
 
+    public boolean existsUser(String username) {
+        return personRepository.existsByUsername(username);
+    }
+
     public ProfileDto getProfile(String username) {
 
         Person person = personRepository.findByUsername(username)
