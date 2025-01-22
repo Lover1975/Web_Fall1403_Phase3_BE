@@ -49,12 +49,19 @@ public class ScoreBoardController {
 
     @PostMapping(value = "follow-action")
     public BaseResponse followAction(@RequestParam Long followerId, @RequestParam Long targetUserId) {
+        if (personService.isFollowing(followerId, targetUserId)) {
+            return new BaseResponse<>(ResponseHeader.ALREADY_FOLLOWING, null);
+        }
         personService.followUser(followerId, targetUserId);
         return new BaseResponse<>(ResponseHeader.OK, null);
     }
 
     @PostMapping(value = "unfollow-action")
     public BaseResponse unfollowAction(@RequestParam Long followerId, @RequestParam Long targetUserId) {
+        if (!personService.isFollowing(followerId, targetUserId)) {
+            return new BaseResponse<>(ResponseHeader.NOT_FOLLOWING, null);
+        }
+
         personService.unfollowPerson(followerId, targetUserId);
         return new BaseResponse<>(ResponseHeader.OK, null);
     }

@@ -70,6 +70,17 @@ public class PersonService {
         return personRepository.findAll();
     }
 
+    public boolean isFollowing(Long followerId, Long targetUserId) {
+        Person follower = personRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+
+        Person targetUser = personRepository.findById(targetUserId)
+                .orElseThrow(() -> new RuntimeException("Target user not found"));
+
+        return follower.getFollowing().contains(targetUser);
+    }
+
+
     @Transactional
     public void addScore(String username, int score) {
         Person person = findPersonByUsername(username);
