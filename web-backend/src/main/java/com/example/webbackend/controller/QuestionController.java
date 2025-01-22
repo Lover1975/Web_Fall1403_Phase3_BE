@@ -14,9 +14,7 @@ import com.example.webbackend.web.ResponseHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 public class QuestionController {
@@ -35,13 +33,22 @@ public class QuestionController {
     @GetMapping(value = "question-by-user")
     public BaseResponse getQuestionsByUser(@RequestParam String username) {
         Person person = personService.findPersonByUsername(username);
-        List<QuestionDto> questions = new LinkedList<QuestionDto>();
-        for (Question question : questionService.getQuestionsByPerson(person)) {
-            QuestionDto questionDto = new QuestionDto(question.getId(),question.getDesigner().getUsername(),
-                    question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(),
-                    question.getAnswer4(), question.getCategory().getCategoryName(), question.getHardness().toString(),
-                    question.getCorrectAnswer().toString());
-            questions.add(questionDto);
+        Set<Question> answeredQuestions = person.getAnsweredQuestions();
+        List<QuestionDto> questions = new ArrayList<>();
+        for (Question q : answeredQuestions) {
+            QuestionDto dto = new QuestionDto(
+                    q.getId(),
+                    q.getDesigner().getUsername(),
+                    q.getQuestion(),
+                    q.getAnswer1(),
+                    q.getAnswer2(),
+                    q.getAnswer3(),
+                    q.getAnswer4(),
+                    q.getCategory().getCategoryName(),
+                    q.getHardness().toString(),
+                    q.getCorrectAnswer().toString()
+            );
+            questions.add(dto);
         }
         QuestionsDto questionsDto = new QuestionsDto(questions);
         return new BaseResponse<>(ResponseHeader.OK, questionsDto);
@@ -112,6 +119,7 @@ public class QuestionController {
         if (question.getCorrectAnswer().intValue() == answer) {
             personService.addScore(username, question.getHardness());
         }
+        personService.recordUserAnsweredQuestion(username, question);
         IntegerDto integerDto = new IntegerDto(question.getCorrectAnswer());
         return new BaseResponse<>(ResponseHeader.OK, integerDto);
     }

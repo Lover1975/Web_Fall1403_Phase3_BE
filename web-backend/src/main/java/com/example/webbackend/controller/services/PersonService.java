@@ -2,6 +2,7 @@ package com.example.webbackend.controller.services;
 
 import com.example.webbackend.repository.PersonRepository;
 import com.example.webbackend.repository.entity.Person;
+import com.example.webbackend.repository.entity.Question;
 import com.example.webbackend.repository.entity.enums.PersonType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,13 @@ public class PersonService {
         person.setScore(0);
 
         return personRepository.save(person);
+    }
+
+    @Transactional
+    public void recordUserAnsweredQuestion(String username, Question question) {
+        Person person = findPersonByUsername(username);
+        person.getAnsweredQuestions().add(question);
+        personRepository.save(person);
     }
 
     @Transactional
