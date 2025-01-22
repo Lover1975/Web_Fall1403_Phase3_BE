@@ -31,4 +31,10 @@ public class QuestionDto extends Dto{
 
     @JsonProperty("category")
     private String category;
+
+    @JsonProperty("hardness")
+    private String hardness;
+
+    @JsonProperty("correct_answer")
+    private String correct_answer;
 }

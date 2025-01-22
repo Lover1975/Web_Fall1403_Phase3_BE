@@ -37,7 +37,10 @@ public class QuestionController {
         Person person = personService.findPersonByUsername(username);
         List<QuestionDto> questions = new LinkedList<QuestionDto>();
         for (Question question : questionService.getQuestionsByPerson(person)) {
-            QuestionDto questionDto = new QuestionDto(question.getId(),question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+            QuestionDto questionDto = new QuestionDto(question.getId(),question.getDesigner().getUsername(),
+                    question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(),
+                    question.getAnswer4(), question.getCategory().getCategoryName(), question.getHardness().toString(),
+                    question.getCorrectAnswer().toString());
             questions.add(questionDto);
         }
         QuestionsDto questionsDto = new QuestionsDto(questions);
@@ -48,7 +51,11 @@ public class QuestionController {
     public BaseResponse getQuestionSet() {
         List<QuestionDto> questionDtos = new LinkedList<QuestionDto>();
         for (Question question : questionService.findAll()) {
-            QuestionDto questionDto = new QuestionDto(question.getId(), question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+            // QuestionDto questionDto = new QuestionDto(question.getId(), question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+            QuestionDto questionDto = new QuestionDto(question.getId(),question.getDesigner().getUsername(),
+                    question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(),
+                    question.getAnswer4(), question.getCategory().getCategoryName(), question.getHardness().toString(),
+                    question.getCorrectAnswer().toString());
             questionDtos.add(questionDto);
         }
         QuestionsDto questionsDto = new QuestionsDto(questionDtos);
@@ -60,7 +67,11 @@ public class QuestionController {
         Random rand = new Random();
         List<Question> questions = questionService.findAll();
         Question question = questions.get(rand.nextInt(questions.size()));
-        QuestionDto questionDto = new QuestionDto(question.getId(), question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+        // QuestionDto questionDto = new QuestionDto(question.getId(), question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+        QuestionDto questionDto = new QuestionDto(question.getId(),question.getDesigner().getUsername(),
+                question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(),
+                question.getAnswer4(), question.getCategory().getCategoryName(), question.getHardness().toString(),
+                question.getCorrectAnswer().toString());
         return new BaseResponse<>(ResponseHeader.OK, questionDto);
     }
 
@@ -70,7 +81,11 @@ public class QuestionController {
         Random rand = new Random();
         List<Question> questions = questionService.findByCategory(category);
         Question question = questions.get(rand.nextInt(questions.size()));
-        QuestionDto questionDto = new QuestionDto(question.getId(), question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+        // QuestionDto questionDto = new QuestionDto(question.getId(), question.getDesigner().getUsername(), question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(), question.getAnswer4(), question.getCategory().getCategoryName());
+        QuestionDto questionDto = new QuestionDto(question.getId(),question.getDesigner().getUsername(),
+                question.getQuestion(), question.getAnswer1(), question.getAnswer2(), question.getAnswer3(),
+                question.getAnswer4(), question.getCategory().getCategoryName(), question.getHardness().toString(),
+                question.getCorrectAnswer().toString());
         return new BaseResponse<>(ResponseHeader.OK, questionDto);
     }
 
