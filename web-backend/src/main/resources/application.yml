@@ -34,6 +34,10 @@ spring:
   #  show-sql: true
   activemq:
     broker-url:
+
+  cache:
+    type: caffeine
+
 path-config:
   entering_fxml: "fxml/Entering.fxml"
   signin_fxml: "fxml/Signin.fxml"

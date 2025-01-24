@@ -9,6 +9,7 @@ import com.example.webbackend.repository.entity.Question;
 import com.example.webbackend.repository.entity.dtos.IntegerDto;
 import com.example.webbackend.repository.entity.dtos.QuestionDto;
 import com.example.webbackend.repository.entity.dtos.QuestionsDto;
+import com.example.webbackend.repository.entity.enums.PersonType;
 import com.example.webbackend.web.BaseResponse;
 import com.example.webbackend.web.ResponseHeader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,25 +34,46 @@ public class QuestionController {
     @GetMapping(value = "question-by-user")
     public BaseResponse getQuestionsByUser(@RequestParam String username) {
         Person person = personService.findPersonByUsername(username);
-        Set<Question> answeredQuestions = person.getAnsweredQuestions();
-        List<QuestionDto> questions = new ArrayList<>();
-        for (Question q : answeredQuestions) {
-            QuestionDto dto = new QuestionDto(
-                    q.getId(),
-                    q.getDesigner().getUsername(),
-                    q.getQuestion(),
-                    q.getAnswer1(),
-                    q.getAnswer2(),
-                    q.getAnswer3(),
-                    q.getAnswer4(),
-                    q.getCategory().getCategoryName(),
-                    q.getHardness().toString(),
-                    q.getCorrectAnswer().toString()
-            );
-            questions.add(dto);
+        if (person.getPersonType() == PersonType.DESIGNER) {
+            List<QuestionDto> questions = new LinkedList<QuestionDto>();
+            for (Question q : questionService.getQuestionsByPerson(person)) {
+                QuestionDto dto = new QuestionDto(
+                        q.getId(),
+                        q.getDesigner().getUsername(),
+                        q.getQuestion(),
+                        q.getAnswer1(),
+                        q.getAnswer2(),
+                        q.getAnswer3(),
+                        q.getAnswer4(),
+                        q.getCategory().getCategoryName(),
+                        q.getHardness().toString(),
+                        q.getCorrectAnswer().toString()
+                );
+                questions.add(dto);
+            }
+            QuestionsDto questionsDto = new QuestionsDto(questions);
+            return new BaseResponse<>(ResponseHeader.OK, questionsDto);
+        } else {
+            Set<Question> answeredQuestions = person.getAnsweredQuestions();
+            List<QuestionDto> questions = new ArrayList<>();
+            for (Question q : answeredQuestions) {
+                QuestionDto dto = new QuestionDto(
+                        q.getId(),
+                        q.getDesigner().getUsername(),
+                        q.getQuestion(),
+                        q.getAnswer1(),
+                        q.getAnswer2(),
+                        q.getAnswer3(),
+                        q.getAnswer4(),
+                        q.getCategory().getCategoryName(),
+                        q.getHardness().toString(),
+                        q.getCorrectAnswer().toString()
+                );
+                questions.add(dto);
+            }
+            QuestionsDto questionsDto = new QuestionsDto(questions);
+            return new BaseResponse<>(ResponseHeader.OK, questionsDto);
         }
-        QuestionsDto questionsDto = new QuestionsDto(questions);
-        return new BaseResponse<>(ResponseHeader.OK, questionsDto);
     }
 
     @GetMapping(value = "question-set")
