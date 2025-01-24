@@ -5,6 +5,8 @@ import com.example.webbackend.repository.entity.Person;
 import com.example.webbackend.repository.entity.Question;
 import com.example.webbackend.repository.entity.enums.PersonType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class PersonService {
         this.personRepository = userRepository;
     }
 
+    @CacheEvict(value = { "allPersons" }, allEntries = true)
     @Transactional
     public Person createPerson(String username, String password, PersonType personType) {
         Person person = new Person();
@@ -74,10 +77,12 @@ public class PersonService {
         return personRepository.findDesignersByUsernameLike(PersonType.DESIGNER, partialName);
     }
 
+    @Cacheable(value = "personByUsername", key = "#username")
     public Person findPersonByUsername(String username) {
         return personRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Person not found"));
     }
 
+    @Cacheable(value = "allPersons")
     public List<Person> findAllPersons() {
         return personRepository.findAll();
     }

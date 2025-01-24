@@ -7,6 +7,7 @@ import com.example.webbackend.repository.entity.Question;
 import com.example.webbackend.repository.entity.enums.PersonType;
 import com.example.webbackend.repository.entity.dtos.QuestionDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class FeedService {
         this.questionRepository = questionRepository;
     }
 
+    @Cacheable(value = "feedForUser", key = "#userId")
     public List<QuestionDto> getFeedForUser(Long userId) {
         Person user = personRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

@@ -5,6 +5,7 @@ import com.example.webbackend.repository.QuestionRepository;
 import com.example.webbackend.repository.entity.Person;
 import com.example.webbackend.repository.entity.dtos.ProfileDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,7 @@ public class ProfileService {
         return personRepository.existsByUsername(username);
     }
 
+    @Cacheable(value = "profileByUsername", key = "#username")
     public ProfileDto getProfile(String username) {
 
         Person person = personRepository.findByUsername(username)

@@ -3,6 +3,8 @@ package com.example.webbackend.controller.services;
 import com.example.webbackend.repository.CategoryRepository;
 import com.example.webbackend.repository.entity.Category;
 import com.example.webbackend.repository.entity.dtos.CategoryDto;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class CategoryService {
         this.modelMapper = new ModelMapper();
     }
 
+    @Cacheable(value = "allCategories")
     public List<CategoryDto> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
@@ -33,6 +36,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = { "allCategories", "categoryByName" }, allEntries = true)
     public CategoryDto addOrUpdateCategory(String categoryName) {
         Optional<Category> existingCategory = categoryRepository.findByCategoryName(categoryName);
         if (existingCategory.isPresent()) {
@@ -43,6 +47,7 @@ public class CategoryService {
         return modelMapper.map(newCategory, CategoryDto.class);
     }
 
+    @Cacheable(value = "categoryByName", key = "#categoryName")
     public Category getCategory(String categoryName) {
         Optional<Category> existingCategory = categoryRepository.findByCategoryName(categoryName);
         if (existingCategory.isPresent()) {

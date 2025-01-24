@@ -6,6 +6,8 @@ import com.example.webbackend.repository.entity.Category;
 import com.example.webbackend.repository.entity.Person;
 import com.example.webbackend.repository.entity.Question;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,22 +24,37 @@ public class QuestionService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Cacheable(value = "allQuestions")
     public List<Question> findAll() {
         return questionRepository.findAll();
     }
 
+    @Cacheable(value = "questionsByCategory", key = "#category.categoryName")
     public List<Question> findByCategory(Category category) {
         return questionRepository.findByCategory(category);
     }
 
+    @Cacheable(value = "questionsByPerson", key = "#designer.id")
     public List<Question> getQuestionsByPerson(Person designer) {
         return questionRepository.findByDesigner(designer);
     }
 
+    @Cacheable(value = "questionById", key = "#id")
     public Question getQuestionById(Long id) {
         return questionRepository.findById(id).orElse(null);
     }
 
+    @CacheEvict(value = {
+            "allQuestions",
+            "questionsByCategory",
+            "questionsByPerson",
+            "profileByUsername",
+            "feedForUser",
+            "personByUsername",
+            "allPersons",
+            "allCategories",
+            "categoryByName"
+    }, allEntries = true)
     public Question addQuestion(Person designer, String questionText, String answer1, String answer2,
                                 String answer3, String answer4, int correctAnswer, int hardness,
                                 String categoryName) {
