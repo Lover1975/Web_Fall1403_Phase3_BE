@@ -18,11 +18,14 @@ public class EntryController {
     @Autowired protected PersonService personService;
 
     @PostMapping(value = "signin")
-    public BaseResponse signin(@RequestParam String username, @RequestParam String password) {
+    public BaseResponse signin(@RequestParam String username, @RequestParam String password, @RequestParam String personType) {
         if (!personService.existsPersonByUserName(username)) {
             return (new BaseResponse(ResponseHeader.USERNAME_NOT_EXISTS, null));
         }
         Person person = personService.findPersonByUsername(username);
+        if (!person.getPersonType().equals(PersonType.valueOf(personType.toUpperCase()))) {
+            return (new BaseResponse(ResponseHeader.WRONG_ROLE, null));
+        }
         if (!person.getPassword().equals(password)) {
             return(new BaseResponse(ResponseHeader.WRONG_PASSWORD, null));
         }

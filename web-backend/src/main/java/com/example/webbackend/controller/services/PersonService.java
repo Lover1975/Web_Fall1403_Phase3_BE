@@ -41,6 +41,17 @@ public class PersonService {
         personRepository.save(person);
     }
 
+    @CacheEvict(value = {
+            "allQuestions",
+            "questionsByCategory",
+            "questionsByPerson",
+            "profileByUsername",
+            "feedForUser",
+            "personByUsername",
+            "allPersons",
+            "allCategories",
+            "categoryByName"
+    }, allEntries = true)
     @Transactional
     public void followUser(Long followerId, Long targetUserId) {
         Person follower = personRepository.findById(followerId)
@@ -57,6 +68,17 @@ public class PersonService {
         personRepository.save(follower);
     }
 
+    @CacheEvict(value = {
+            "allQuestions",
+            "questionsByCategory",
+            "questionsByPerson",
+            "profileByUsername",
+            "feedForUser",
+            "personByUsername",
+            "allPersons",
+            "allCategories",
+            "categoryByName"
+    }, allEntries = true)
     @Transactional
     public void unfollowPerson(Long followerId, Long targetUserId) {
         Person follower = personRepository.findById(followerId)
@@ -98,6 +120,17 @@ public class PersonService {
     }
 
 
+    @CacheEvict(value = {
+            "allQuestions",
+            "questionsByCategory",
+            "questionsByPerson",
+            "profileByUsername",
+            "feedForUser",
+            "personByUsername",
+            "allPersons",
+            "allCategories",
+            "categoryByName"
+    }, allEntries = true)
     @Transactional
     public void addScore(String username, int score) {
         Person person = findPersonByUsername(username);
